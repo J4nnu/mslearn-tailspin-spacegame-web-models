@@ -35,10 +35,14 @@ steps:
     minorVersion: '0'
     patchVersion: '0'
  
-- task: NuGetCommand@2
-  displayName: 'Publish NuGet package'
+- task: NuGetAuthenticate@1
+  displayName: 'Authenticate with Azure Artifacts feed'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Push NuGet package'
   inputs:
     command: push
-    feedPublish: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models'
-    allowPackageConflicts: true
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models'
   condition: succeeded()
